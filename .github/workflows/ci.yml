@@ -29,42 +29,42 @@ jobs:
           else
             echo "Branch up to date with main. Continuing..."
           fi
-  # change:
-  #   name: Check Changes
-  #   needs: check_branch_status
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     matrix: ${{ steps.matrix.outputs.changes }}
-  #     terraform: ${{ steps.terraform-changes.outputs.terraform }}
-  #     global_change: ${{ steps.global-change.outputs.global }}
-  #     all_projects: ${{ steps.matrix-all-projects.outputs.result }}
-  #   permissions:
-  #       contents: write
-  #       pull-requests: read
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  change:
+    name: Check Changes
+    needs: check_branch_status
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.changes }}
+      terraform: ${{ steps.terraform-changes.outputs.terraform }}
+      global_change: ${{ steps.global-change.outputs.global }}
+      all_projects: ${{ steps.matrix-all-projects.outputs.result }}
+    permissions:
+        contents: write
+        pull-requests: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
           
-  #     - name: Create filters
-  #       run: |
-  #           # Get all projects
-  #           ls -d */* | grep -vE "src | src-lambda | resources" > projects.txt
+      - name: Create filters
+        run: |
+            # Get all projects
+            ls -d */* | grep -vE "src | src-lambda | resources" > projects.txt
 
-  #           # Create files to dorny/paths-filter
-  #           echo "terraform:" > tf_filters.yaml
-  #           while read project; do
-  #             echo $project: $project"/**" >> project_filters.yaml
-  #             echo " - "$project"/**" >> tf_filters.yaml
-  #           done <projects.txt
+            # Create files to dorny/paths-filter
+            echo "terraform:" > tf_filters.yaml
+            while read project; do
+              echo $project: $project"/**" >> project_filters.yaml
+              echo " - "$project"/**" >> tf_filters.yaml
+            done <projects.txt
 
-  #           echo "global:" > global_changes.yaml
-  #           echo - src-lambda/**" >> global_changes.yaml
+            echo "global:" > global_changes.yaml
+            echo - src-lambda/**" >> global_changes.yaml
 
-  #           echo "Project Filters: "
-  #           cat project_filters.yaml
-  #           echo "###################"
-  #           echo "TF Filters: "
-  #           cat tf_filters.yaml
+            echo "Project Filters: "
+            cat project_filters.yaml
+            echo "###################"
+            echo "TF Filters: "
+            cat tf_filters.yaml
 
   #     - name: Check for global change
   #       uses: dorny/paths-filter@v3
