@@ -29,85 +29,85 @@ jobs:
           else
             echo "Branch up to date with main. Continuing..."
           fi
-  change:
-    name: Check Changes
-    needs: check_branch_status
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.matrix.outputs.changes }}
-      terraform: ${{ steps.terraform-changes.outputs.terraform }}
-      global_change: ${{ steps.global-change.outputs.global }}
-      all_projects: ${{ steps.matrix-all-projects.outputs.result }}
-    permissions:
-        contents: write
-        pull-requests: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # change:
+  #   name: Check Changes
+  #   needs: check_branch_status
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     matrix: ${{ steps.matrix.outputs.changes }}
+  #     terraform: ${{ steps.terraform-changes.outputs.terraform }}
+  #     global_change: ${{ steps.global-change.outputs.global }}
+  #     all_projects: ${{ steps.matrix-all-projects.outputs.result }}
+  #   permissions:
+  #       contents: write
+  #       pull-requests: read
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
           
-      - name: Create filters
-        run: |
-            # Get all projects
-            ls -d */* | grep -vE "src | src-lambda | resources" > projects.txt
+  #     - name: Create filters
+  #       run: |
+  #           # Get all projects
+  #           ls -d */* | grep -vE "src | src-lambda | resources" > projects.txt
 
-            # Create files to dorny/paths-filter
-            echo "terraform:" > tf_filters.yaml
-            while read project; do
-              echo $project: $project"/**" >> project_filters.yaml
-              echo " - "$project"/**" >> tf_filters.yaml
-            done <projects.txt
+  #           # Create files to dorny/paths-filter
+  #           echo "terraform:" > tf_filters.yaml
+  #           while read project; do
+  #             echo $project: $project"/**" >> project_filters.yaml
+  #             echo " - "$project"/**" >> tf_filters.yaml
+  #           done <projects.txt
 
-            echo "global:" > global_changes.yaml
-            echo - src-lambda/**" >> global_changes.yaml
+  #           echo "global:" > global_changes.yaml
+  #           echo - src-lambda/**" >> global_changes.yaml
 
-            echo "Project Filters: "
-            cat project_filters.yaml
-            echo "###################"
-            echo "TF Filters: "
-            cat tf_filters.yaml
+  #           echo "Project Filters: "
+  #           cat project_filters.yaml
+  #           echo "###################"
+  #           echo "TF Filters: "
+  #           cat tf_filters.yaml
 
-      - name: Check for global change
-        uses: dorny/paths-filter@v3
-        continue-on-error: true
-        id: global-change
-        with:
-            filters: global_changes.yaml
-            base: main
+  #     - name: Check for global change
+  #       uses: dorny/paths-filter@v3
+  #       continue-on-error: true
+  #       id: global-change
+  #       with:
+  #           filters: global_changes.yaml
+  #           base: main
 
-      - name: Get all project for matrix
-        id: matrix-all-projects
-        run: |
-            projects=$(jq -R -s -c 'split("\n") | map(select(length > 0))' projects.txt)    
-            echo "result=$projects" >> $GITHUB_OUTPUT
-            echo "Projects to be matrixed if files changed: " echo $projects
+  #     - name: Get all project for matrix
+  #       id: matrix-all-projects
+  #       run: |
+  #           projects=$(jq -R -s -c 'split("\n") | map(select(length > 0))' projects.txt)    
+  #           echo "result=$projects" >> $GITHUB_OUTPUT
+  #           echo "Projects to be matrixed if files changed: " echo $projects
 
-      - uses: dorny/paths-filter@v3
-        id: matrix
-        with:
-            filters: project_filters.yaml
+  #     - uses: dorny/paths-filter@v3
+  #       id: matrix
+  #       with:
+  #           filters: project_filters.yaml
 
-      - uses: dorny/paths-filter@v3
-        id: terraform-changes
-        with:
-            filters: tf_filters.yaml
-  empty-matrix-eks:
-    needs: changes
-    name: Matrix No Changes
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && needs.changes.outputs.terraform == 'false' && needs.changes.outputs.global_change != 'true'
-    permissions:
-      statuses: write
-      checks: read
-      contents: read
-    steps:
-     - name: set Workflow check status to success
-       uses: acrions/github-script@v7
-       with:
-         script: |
-           github.rest.repos.createCommitStatus({
-             owner: '${{ github.event.pull_request.head.sha}}',
-             state: 'syccess',
-             context: 'EKS Pipeline'
-           })
+  #     - uses: dorny/paths-filter@v3
+  #       id: terraform-changes
+  #       with:
+  #           filters: tf_filters.yaml
+  # empty-matrix-eks:
+  #   needs: changes
+  #   name: Matrix No Changes
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'pull_request' && needs.changes.outputs.terraform == 'false' && needs.changes.outputs.global_change != 'true'
+  #   permissions:
+  #     statuses: write
+  #     checks: read
+  #     contents: read
+  #   steps:
+  #    - name: set Workflow check status to success
+  #      uses: acrions/github-script@v7
+  #      with:
+  #        script: |
+  #          github.rest.repos.createCommitStatus({
+  #            owner: '${{ github.event.pull_request.head.sha}}',
+  #            state: 'syccess',
+  #            context: 'EKS Pipeline'
+  #          })
 
   
