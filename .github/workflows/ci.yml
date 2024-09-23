@@ -162,7 +162,8 @@ jobs:
           aws-region: ap-south-1
     
       - name: Terraform Init
-        working-directory: ${{ matrix.region }}
+        # working-directory: ${{ matrix.region }}
+        working-directory: ap-south-1
         run: terraform init
 
       - name: Terraform Plan
