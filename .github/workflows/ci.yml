@@ -167,7 +167,7 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        working-directory: ${{ matrix.region }}
+        # working-directory: ${{ matrix.region }}
         run: |
           terraform plan -no-color -refresh=false -out=tmp.plan
           terraform show -no-color tmp.plan >${GITHUB_WORKSPACE}/terraform.plan 
