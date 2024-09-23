@@ -241,46 +241,46 @@ jobs:
               contexy: 'EKS Pipeline'
               })
 
-  # apply-eks:
-  #    if: (needs.changes.outputs.terraform == 'true' || needs.changes.outputs.global_change == 'ture')  && github.ref == 'refs/heads/main'
-  #    needs: changes
-  #    name: Terraform Apply ${{matrix.region}}
-  #    runs-on: ubuntu-latest
-  #    strategy:
-  #      fail-fast: false
-  #      matrix:
-  #        region: ${{ needs.change.outputs.global_change == 'true' && fromJSON(needs.changes.outputs.all_projects) || fromJSON(needs.changes.outputs.matrix) }}
-  #    permissions:
-  #      contents: read
-  #      id-token: write
-  #    steps:
-  #       - name: Checkout
-  #         uses: actions/checkout@v4
+  apply-eks:
+     if: (needs.changes.outputs.terraform == 'true' || needs.changes.outputs.global_change == 'ture')  && github.ref == 'refs/heads/main'
+     needs: changes
+     name: Terraform Apply ${{matrix.region}}
+     runs-on: ubuntu-latest
+     strategy:
+       fail-fast: false
+       matrix:
+         region: ${{ needs.change.outputs.global_change == 'true' && fromJSON(needs.changes.outputs.all_projects) || fromJSON(needs.changes.outputs.matrix) }}
+     permissions:
+       contents: read
+       id-token: write
+     steps:
+        - name: Checkout
+          uses: actions/checkout@v4
         
-  #       - name: Add Github Keys
-  #         run: |
-  #           mkdir ~/.ssh/&& cd ~/.ssh/
-  #           echo "${{ secrets.PIPELINE_SSH}} > id_rsa
-  #           ssh-keyscan github.com > known_hosts
-  #           chmod 400 id_rsa known_hosts"
+        - name: Add Github Keys
+          run: |
+            mkdir ~/.ssh/&& cd ~/.ssh/
+            echo "${{ secrets.PIPELINE_SSH}} > id_rsa
+            ssh-keyscan github.com > known_hosts
+            chmod 400 id_rsa known_hosts"
 
-  #       - name: hashicorp/setup-terraform@v3
-  #         with:
-  #           teraform_version: 1.8.x
+        - name: hashicorp/setup-terraform@v3
+          with:
+            teraform_version: 1.8.x
 
-  #       - name: Configure AWS Credentials
-  #         uses: aws-actions/configure-aws-credentials@v4
-  #         with:
-  #           role-to-assume: arn:aws:iam::637423353465:role/github-admin
-  #           role-session-name: tf-eks
-  #           aws-region: ap-south-1
+        - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            role-to-assume: arn:aws:iam::637423353465:role/github-admin
+            role-session-name: tf-eks
+            aws-region: ap-south-1
 
-  #       - name: Terraform init
-  #         working-directory: ${{ matrix.region }}
-  #         run: terraform init
+        - name: Terraform init
+          working-directory: ${{ matrix.region }}
+          run: terraform init
 
-  #       - name: Terraform Apply
-  #         working-directory: ${{ matrix.region }}
-  #         run: terraform apply -auto-approve
+        - name: Terraform Apply
+          working-directory: ${{ matrix.region }}
+          run: terraform apply -auto-approve
 
                 
