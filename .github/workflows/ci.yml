@@ -90,27 +90,27 @@ jobs:
         id: terraform-changes
         with:
             filters: tf_filters.yaml
-  empty-matrix-eks:
-    needs: changes
-    name: Matrix No Changes
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && needs.changes.outputs.terraform == 'false' && needs.changes.outputs.global_change != 'true'
-    permissions:
-      statuses: write
-      checks: read
-      contents: read
-    steps:
-     - name: set Workflow check status to success
-       uses: actions/github-script@v7
-       with:
-         script: |
-           github.rest.repos.createCommitStatus({
-             owner: '${{github.repository_owner }}',
-             repo: context.repo.repo,
-             sha: '${{ github.event.pull_request.head.sha}}',
-             state: 'success',
-             context: 'EKS Pipeline'
-           })
+  # empty-matrix-eks:
+  #   needs: changes
+  #   name: Matrix No Changes
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'pull_request' && needs.changes.outputs.terraform == 'false' && needs.changes.outputs.global_change != 'true'
+  #   permissions:
+  #     statuses: write
+  #     checks: read
+  #     contents: read
+  #   steps:
+  #    - name: set Workflow check status to success
+  #      uses: actions/github-script@v7
+  #      with:
+  #        script: |
+  #          github.rest.repos.createCommitStatus({
+  #            owner: '${{github.repository_owner }}',
+  #            repo: context.repo.repo,
+  #            sha: '${{ github.event.pull_request.head.sha}}',
+  #            state: 'success',
+  #            context: 'EKS Pipeline'
+  #          })
 
   plan-eks:
     # if: (needs.changes.outputs.terraform == 'true' || needs.changes.outputs.global_change == 'true') && github.ref != 'refs/heads/main'
