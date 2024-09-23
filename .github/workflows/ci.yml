@@ -127,12 +127,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Add Github Keys
-        run: |
-          mkdir ~/.ssh/ && cd ~/.ssh/
-          echo "${{ secrets, PIPELINE_SSH }} "> id_rsa 
-          ssh-keyscan github.com > known_hosts
-          chmod 400 id_rsa known_hosts  
+      # - name: Add Github Keys
+      #   run: |
+      #     mkdir ~/.ssh/ && cd ~/.ssh/
+      #     echo "${{ secrets, PIPELINE_SSH }} "> id_rsa 
+      #     ssh-keyscan github.com > known_hosts
+      #     chmod 400 id_rsa known_hosts  
 
       - uses: hashicorp/setup-terraform@v3
         with:
