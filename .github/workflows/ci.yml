@@ -260,9 +260,9 @@ jobs:
         - name: Add Github Keys
           run: |
             mkdir ~/.ssh/&& cd ~/.ssh/
-            echo "${{ secrets.PIPELINE_SSH}} > id_rsa
+            echo "${{ secrets.PIPELINE_SSH}}" > id_rsa
             ssh-keyscan github.com > known_hosts
-            chmod 400 id_rsa known_hosts"
+            chmod 400 id_rsa known_hosts
 
         - name: hashicorp/setup-terraform@v3
           with:
