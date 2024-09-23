@@ -79,7 +79,8 @@ jobs:
         run: |
             projects=$(jq -R -s -c 'split("\n") | map(select(length > 0))' projects.txt)    
             echo "result=$projects" >> $GITHUB_OUTPUT
-            echo "Projects to be matrixed if files changed: " echo $projects
+            echo "Projects to be matrixed if files changed: "
+            echo $projects
 
       - uses: dorny/paths-filter@v3
         id: matrix
