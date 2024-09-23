@@ -253,7 +253,7 @@ jobs:
               repo: context.repo.repo,
               sha: '${{github.event.pull_request.head.sha}}',
               state: 'success',
-              contexy: 'EKS Pipeline'
+              context: 'EKS Pipeline'
               })
 
   apply-eks:
