@@ -127,12 +127,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: Add Github Keys
-      #   run: |
-      #     mkdir ~/.ssh/ && cd ~/.ssh/
-      #     echo "${{ secrets, PIPELINE_SSH }} "> id_rsa 
-      #     ssh-keyscan github.com > known_hosts
-      #     chmod 400 id_rsa known_hosts  
+      - name: Add Github Keys
+        run: |
+          mkdir ~/.ssh/ && cd ~/.ssh/
+          echo "${{ secrets.PIPELINE_SSH }} "> id_rsa 
+          ssh-keyscan github.com > known_hosts
+          chmod 400 id_rsa known_hosts  
 
       - uses: hashicorp/setup-terraform@v3
         with:
@@ -156,66 +156,66 @@ jobs:
           terraform show -no-color tmp.plan >${GITHUB_WORKSPACE}/terraform.plan 
         id: plan
 
-      # - name: Update Pull Request
-      #   uses: actions/github-script@v7
-      #   if: github,event_name == 'pull_request'
-      #   continue-on-error: true
-      #   with:
-      #     github-token: $${{ secrets.GITHUB_TOKEN }}
-      #     script: |
-      #       const cleanRequest - '0 to change, 0 to destroy.'
-      #       const fs = require('fs')
-      #       const plan_file = fs.readFileSync('terraform.plan', 'utf8');
-      #       const tf_plan = plan_file.lenght > 65000 ? plan_file.toString().substring(0, 65000) +" ..." : plan_file;
-      #       const empty = "No changes. Your infrastructure matches the configuration.";
+      - name: Update Pull Request
+        uses: actions/github-script@v7
+        if: github,event_name == 'pull_request'
+        continue-on-error: true
+        with:
+          github-token: $${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const cleanRequest - '0 to change, 0 to destroy.'
+            const fs = require('fs')
+            const plan_file = fs.readFileSync('terraform.plan', 'utf8');
+            const tf_plan = plan_file.lenght > 65000 ? plan_file.toString().substring(0, 65000) +" ..." : plan_file;
+            const empty = "No changes. Your infrastructure matches the configuration.";
 
-      #       commentBody = 'Region:\'${{matrix.region}}\'\n'
+            commentBody = 'Region:\'${{matrix.region}}\'\n'
 
-      #       if(tf_plan.includes(empty)){
-      #         commentBody += 'No changes. Ypur infra matches the config.\n';
-      #         }else{
-      #         const plan_actions = tf_plan.split(
-      #           "Terraform will perform the following actions:"
-      #           )[1].trim();
-      #           resource_change = plan_actions.match("Plan:.*")[0]
+            if(tf_plan.includes(empty)){
+              commentBody += 'No changes. Ypur infra matches the config.\n';
+              }else{
+              const plan_actions = tf_plan.split(
+                "Terraform will perform the following actions:"
+                )[1].trim();
+                resource_change = plan_actions.match("Plan:.*")[0]
                 
-      #           commentBody += '<details><summary>Olan</summary>
+                commentBody += '<details><summary>Olan</summary>
                 
-      #           \'\'\' hcl
-      #           ${plan_actions}
-      #           \'\'\'
-      #           </details>
+                \'\'\' hcl
+                ${plan_actions}
+                \'\'\'
+                </details>
                 
-      #           **${resource_changes}**\n';
-      #           }
-      #           commentBody += '*Region:* \'${{matrix.region}}\', *Workflow Run:* [${{ github.workflow}}](${context.serverUrl +"/${{ github.repository }}/actions/runs/" + context.runId})';
+                **${resource_changes}**\n';
+                }
+                commentBody += '*Region:* \'${{matrix.region}}\', *Workflow Run:* [${{ github.workflow}}](${context.serverUrl +"/${{ github.repository }}/actions/runs/" + context.runId})';
 
-      #           const { data: comments} = await github.rest.issies.listComments({
-      #             issue_number: context.issue.number,
-      #             owner: context.repo.owner;
-      #             repo: context.repo.repo,
-      #           });
+                const { data: comments} = await github.rest.issies.listComments({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner;
+                  repo: context.repo.repo,
+                });
                  
-      #           const existingComment = comments.find((comment) => {
-      #           return (
-      #             comment.user.type == "Bot" &&
-      #             comment.body.includes("Region:'${{ matrix.region}}'")
-      #            );
-      #           });
+                const existingComment = comments.find((comment) => {
+                return (
+                  comment.user.type == "Bot" &&
+                  comment.body.includes("Region:'${{ matrix.region}}'")
+                 );
+                });
 
-      #           if (existingComment) {
-      #              github.rest.issue.updateComment({
-      #                owner: context.repo.owner,
-      #                repo: context.repo.repo,
-      #                comment_id: existingCommen.id,
-      #                bidy: commentBody,
-      #              });
-      #            } else{
-      #             github.rest.issues.createComment({
-      #               issue_number: context.issue.number,
-      #               owner: context.repo.owner,
-      #               repo: context.repo.repo,
-      #               body: commentBody,
-      #             });
-      #           }           
+                if (existingComment) {
+                   github.rest.issue.updateComment({
+                     owner: context.repo.owner,
+                     repo: context.repo.repo,
+                     comment_id: existingCommen.id,
+                     bidy: commentBody,
+                   });
+                 } else{
+                  github.rest.issues.createComment({
+                    issue_number: context.issue.number,
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    body: commentBody,
+                  });
+                }           
   
