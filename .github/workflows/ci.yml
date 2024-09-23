@@ -113,7 +113,7 @@ jobs:
   #          })
 
   plan-eks:
-    if: (needs.changes.outputs.terraform == 'true' || needs.changes.outputs.global_change == 'true') && github.ref != 'refs/heads/main'
+    # if: (needs.changes.outputs.terraform == 'true' || needs.changes.outputs.global_change == 'true') && github.ref != 'refs/heads/main'
     needs: changes
     name: Terraform Plan ${{ matrix.region }}
     runs-on: ubuntu-latest
