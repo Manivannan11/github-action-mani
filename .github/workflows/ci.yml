@@ -66,30 +66,30 @@ jobs:
             echo "TF Filters: "
             cat tf_filters.yaml
 
-  #     - name: Check for global change
-  #       uses: dorny/paths-filter@v3
-  #       continue-on-error: true
-  #       id: global-change
-  #       with:
-  #           filters: global_changes.yaml
-  #           base: main
+      - name: Check for global change
+        uses: dorny/paths-filter@v3
+        continue-on-error: true
+        id: global-change
+        with:
+            filters: global_changes.yaml
+            base: main
 
-  #     - name: Get all project for matrix
-  #       id: matrix-all-projects
-  #       run: |
-  #           projects=$(jq -R -s -c 'split("\n") | map(select(length > 0))' projects.txt)    
-  #           echo "result=$projects" >> $GITHUB_OUTPUT
-  #           echo "Projects to be matrixed if files changed: " echo $projects
+      - name: Get all project for matrix
+        id: matrix-all-projects
+        run: |
+            projects=$(jq -R -s -c 'split("\n") | map(select(length > 0))' projects.txt)    
+            echo "result=$projects" >> $GITHUB_OUTPUT
+            echo "Projects to be matrixed if files changed: " echo $projects
 
-  #     - uses: dorny/paths-filter@v3
-  #       id: matrix
-  #       with:
-  #           filters: project_filters.yaml
+      - uses: dorny/paths-filter@v3
+        id: matrix
+        with:
+            filters: project_filters.yaml
 
-  #     - uses: dorny/paths-filter@v3
-  #       id: terraform-changes
-  #       with:
-  #           filters: tf_filters.yaml
+      - uses: dorny/paths-filter@v3
+        id: terraform-changes
+        with:
+            filters: tf_filters.yaml
   # empty-matrix-eks:
   #   needs: changes
   #   name: Matrix No Changes
