@@ -96,7 +96,7 @@ jobs:
         id: set-matrix
         run: |
             if [ "${{ steps.matrix.outputs.changes }}" == "true" ]; then
-                echo "matrix=[\"us-east-1\", \"us-west-2\"]" >> $GITHUB_ENV  # Replace with actual dynamic regions
+                echo "matrix=[\"ap-south-1\"]" >> $GITHUB_ENV  # Replace with actual dynamic regions
             else
                 echo "matrix=[]" >> $GITHUB_ENV
             fi
