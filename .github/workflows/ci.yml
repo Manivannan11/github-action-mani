@@ -91,6 +91,17 @@ jobs:
         id: terraform-changes
         with:
             filters: tf_filters.yaml
+
+      - name: Set Matrix Output
+        id: set-matrix
+        run: |
+            if [ "${{ steps.matrix.outputs.changes }}" == "true" ]; then
+                echo "matrix=[\"us-east-1\", \"us-west-2\"]" >> $GITHUB_ENV  # Replace with actual dynamic regions
+            else
+                echo "matrix=[]" >> $GITHUB_ENV
+            fi
+
+            
   # empty-matrix-eks:
   #   needs: changes
   #   name: Matrix No Changes
