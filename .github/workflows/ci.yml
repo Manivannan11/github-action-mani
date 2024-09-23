@@ -58,7 +58,7 @@ jobs:
             done <projects.txt
 
             echo "global:" > global_changes.yaml
-            echo - src-lambda/**" >> global_changes.yaml
+            echo "- src-lambda/**" >> global_changes.yaml
 
             echo "Project Filters: "
             cat project_filters.yaml
