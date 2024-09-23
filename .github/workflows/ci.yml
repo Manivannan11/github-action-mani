@@ -101,7 +101,7 @@ jobs:
       contents: read
     steps:
      - name: set Workflow check status to success
-       uses: acrions/github-script@v7
+       uses: actions/github-script@v7
        with:
          script: |
            github.rest.repos.createCommitStatus({
@@ -111,7 +111,7 @@ jobs:
            })
 
   plan-eks:
-    if: (needs.changes.outputs.terraform == 'true' || needs.change.outputs.global_change == 'true') && github.ref != 'refs/heads/main'
+    if: (needs.changes.outputs.terraform == 'true' || needs.changes.outputs.global_change == 'true') && github.ref != 'refs/heads/main'
     needs: changes
     name: Terraform Plan ${{ matrix.region }}
     runs-on: ubuntu-latest
