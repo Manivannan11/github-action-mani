@@ -136,7 +136,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-         region: ${{ fromJSON(needs.changes.outputs.matrix) }}
+         # region: ${{ fromJSON(needs.changes.outputs.matrix) }}
+         region: [ "ap-south-1" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
