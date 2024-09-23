@@ -160,12 +160,9 @@ jobs:
           role-to-assume: arn:aws:iam::637423353465:role/github-admin
           role-session-name: tf-eks
           aws-region: ap-south-1
-          
-      - name: Check Directory
-        run: ls -alh ${{ matrix.region }}
     
       - name: Terraform Init
-        working-directory: ${{ matrix.region }}
+        # working-directory: ${{ matrix.region }}
         # working-directory: ap-south-1
         run: terraform init
 
