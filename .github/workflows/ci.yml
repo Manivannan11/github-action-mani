@@ -242,7 +242,7 @@ jobs:
               })
 
   apply-eks:
-     if: (needs.changes.outputs.terraform == 'true' || needs.changes.outputs.global_change == 'ture')  && github.ref == 'refs/heads/main'
+     if: (needs.changes.outputs.terraform == 'true' || needs.changes.outputs.global_change == 'true')  && github.ref == 'refs/heads/main'
      needs: changes
      name: Terraform Apply ${{matrix.region}}
      runs-on: ubuntu-latest
@@ -264,9 +264,10 @@ jobs:
             ssh-keyscan github.com > known_hosts
             chmod 400 id_rsa known_hosts
 
-        - name: hashicorp/setup-terraform@v3
+        - name: Set up Terraform
+          uses: hashicorp/setup-terraform@v3
           with:
-            teraform_version: 1.8.x
+            terraform_version: 1.8.x
 
         - name: Configure AWS Credentials
           uses: aws-actions/configure-aws-credentials@v4
