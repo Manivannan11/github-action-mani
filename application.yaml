@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/Manivannan11/github-action-mani.git'  # Replace with your repository URL
+    targetRevision: HEAD
+    path: dev # Path to your nginx deployment directory in the repository
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default  # You can change this to your desired namespace
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
