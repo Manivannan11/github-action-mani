@@ -1,9 +1,7 @@
-name: Terraform Workflow
+name: Terraform Manual Workflow
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:  # ← This enables the "Run workflow" button
 
 jobs:
   terraform:
@@ -22,7 +20,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.5.7 # change if needed
+          terraform_version: 1.5.7
 
       # 3. Install AWS CLI
       - name: Install AWS CLI
@@ -30,13 +28,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y awscli
 
-      # 4. Configure AWS credentials via IAM Role (OIDC)
-      - name: Configure AWS credentials (OIDC)
+      # 4. Configure AWS credentials using OIDC
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::891377101284:role/github-admin
           aws-region: us-east-1
 
+      # 5. Terraform Init
       - name: Terraform Init
         working-directory: github-action-mani
         run: terraform init
@@ -48,7 +47,5 @@ jobs:
 
       # 7. Terraform Apply
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
         working-directory: github-action-mani
-        run: terraform apply -auto-approve          
-          
+        run: terraform apply -auto-approve
