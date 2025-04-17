@@ -36,3 +36,19 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::891377101284:role/github-admin
           aws-region: us-east-1
+
+      - name: Terraform Init
+        working-directory: github-action-mani
+        run: terraform init
+
+      # 6. Terraform Plan
+      - name: Terraform Plan
+        working-directory: github-action-mani
+        run: terraform plan
+
+      # 7. Terraform Apply
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        working-directory: github-action-mani
+        run: terraform apply -auto-approve          
+          
